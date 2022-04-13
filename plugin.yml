@@ -1,0 +1,8 @@
+name: 29Operations
+main: dev.cromo29.operations.OperationPlugin
+version: 4.0
+author: Cromo29
+
+depend:
+  - DurkCore
+  - 29Chat

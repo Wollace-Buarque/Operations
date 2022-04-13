@@ -1,0 +1,56 @@
+#
+#  ____   ___   ___                       _   _
+# |___ \ / _ \ / _ \ _ __   ___ _ __ __ _| |_(_) ___  _ __  ___
+#   __) | (_) | | | | '_ \ / _ \ '__/ _` | __| |/ _ \| '_ \/ __|
+#  / __/ \__, | |_| | |_) |  __/ | | (_| | |_| | (_) | | | \__ \
+# |_____|  /_/ \___/| .__/ \___|_|  \__,_|\__|_|\___/|_| |_|___/
+#                   |_|
+#
+# Autor: Cromo29
+# Versão: 4.0
+#
+# Missões disponiveis para utilizar no 'Type':
+# Formato: Tipo, Quantidade
+#
+# Tipos: KILL_PLAYER | KILL_IN_X1 | KILL_IN_GLAD | KILL_IN_ARENA | BREAK_COAL | BREAK_IRON | BREAK_GOLD | BREAK_REDSTONE
+# BREAK_LAPIS | BREAK_EMERALD | BREAK_DIAMOND
+#
+
+Operations:
+  Fenix:
+    ID: "276"
+    Display: "&6✩ Fenix"
+    Value: 2000000
+    Enabled: true
+    Tag: "&6✩ Fenix "
+    Lore:
+      - ""
+      - " &7Operação &6✩ Fenix&7!"
+      - " &7Valor: &6{value}"
+      - ""
+    Info lore:
+      - ""
+      - " &eOperação {display} &eatualmente {status}!"
+      - " &eClique aqui para ver as informações!"
+      - ""
+    Type:
+      - "BREAK_GOLD, 15"
+
+  Natal:
+    ID: "332"
+    Display: "&c✩ Natal"
+    Value: 2000000
+    Enabled: true
+    Tag: "&c✩ Natal "
+    Lore:
+      - ""
+      - " &7Operação &c✩ Natal&7!"
+      - " &7Valor: &c{value}"
+      - ""
+    Info lore:
+      - ""
+      - " &eOperação {display} &eatualmente {status}!"
+      - " &eClique aqui para ver as informações!"
+      - ""
+    Type:
+      - "BREAK_LAPIS, 15"

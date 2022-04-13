@@ -1,0 +1,35 @@
+#
+#  ____   ___   ___                       _   _
+# |___ \ / _ \ / _ \ _ __   ___ _ __ __ _| |_(_) ___  _ __  ___
+#   __) | (_) | | | | '_ \ / _ \ '__/ _` | __| |/ _ \| '_ \/ __|
+#  / __/ \__, | |_| | |_) |  __/ | | (_| | |_| | (_) | | | \__ \
+# |_____|  /_/ \___/| .__/ \___|_|  \__,_|\__|_|\___/|_| |_|___/
+#                   |_|
+#
+# Autor: Cromo29
+# Versão: 4.0
+#
+# Permissões: 29Operations.VIP | 29Operations.*
+#
+
+Settings: # Disconto VIP para comprar a missão.
+  Discount: 1000000
+
+  Break worlds: # Mundos que serão permitidos contabilizar o ponto ao quebrar um bloco.
+    - "world"
+
+  Treasure:
+    Name: "&bTesouro"
+    Title: "&bTesouro"
+    Author: "TrCraft"
+
+    X: -500, 500 # Minímo e máximo da coordenada X;
+    Y: 3 # Coordenada Y;
+    Z: -500, 500 # Minímo e máximo da coordenada Y;
+
+    Default: # Níveis de tesouros que pode vim quando concluir uma fase.
+      Min: 1
+      Max: 2
+    End: # Níveis de tesouros que pode vim quando concluir a operação inteira.
+      Min: 2
+      Max: 3

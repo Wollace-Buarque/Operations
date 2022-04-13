@@ -1,0 +1,53 @@
+Treasures:
+  Fenix:
+    1:
+      Percentage: 30.0
+      Items:
+        - 306;null;null;1;null
+        - 307;null;null;1;null
+        - 308;null;null;1;null
+        - 309;null;null;1;null
+    2:
+      Percentage: 50.0
+      Items:
+        - 322;null;null;64;null
+        - 306;null;null;1;null
+        - 307;null;null;1;null
+        - 308;null;null;1;null
+        - 309;null;null;1;null
+    3:
+      Percentage: 20.0
+      Items:
+        - 276;null;sharpness:5-unbreaking:3-fireaspect:2;1;null
+        - 322:1;null;null;20;null
+        - 322;null;null;64;null
+        - 306;null;null;1;null
+        - 307;null;null;1;null
+        - 308;null;null;1;null
+        - 309;null;null;1;null
+  Natal:
+    1:
+      Percentage: 30.0
+      Items:
+        - 306;null;null;1;null
+        - 307;null;null;1;null
+        - 308;null;null;1;null
+        - 309;null;null;1;null
+    2:
+      Percentage: 50.0
+      Items:
+        - 322;null;null;64;null
+        - 306;null;null;1;null
+        - 307;null;null;1;null
+        - 308;null;null;1;null
+        - 309;null;null;1;null
+    3:
+      Percentage: 20.0
+      Items:
+        - 276;null;sharpness:5-unbreaking:3-fireaspect:2;1;null
+        - 322:1;null;null;20;null
+        - 322;null;null;64;null
+        - 306;null;null;1;null
+        - 307;null;null;1;null
+        - 308;null;null;1;null
+        - 309;null;null;1;null
