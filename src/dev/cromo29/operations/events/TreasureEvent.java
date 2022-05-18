@@ -77,7 +77,7 @@ public class TreasureEvent implements Listener {
                 double distance = chestLocation.distance(playerLocation);
 
                 if (distance <= 3) spawnChest(player, chestLocation, item, operationName, level);
-                else PlayerUtil.sendActionBar(player, "<c>Você está à distância de <f>" + NumberUtil.formatNumberSimple(distance) + " <c>blocos do tesouro!");
+                else PlayerUtil.sendActionBar(player, "<c>Você está a <f>" + NumberUtil.formatNumberSimple(distance) + " <c>blocos do tesouro!");
 
             } else spawnChest(player, chestLocation, item, operationName, level);
 

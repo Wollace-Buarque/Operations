@@ -10,16 +10,14 @@ import dev.cromo29.operations.events.VillagerEvents;
 
 public class OperationPlugin extends DurkPlugin {
 
-    private final OperationAPI operationAPI;
-
-    public OperationPlugin(OperationAPI operationAPI) {
-        this.operationAPI = operationAPI;
-    }
+    private OperationAPI operationAPI;
 
     @Override
     public void onStart() {
+        this.operationAPI = new OperationAPI();
+
         registerCommands(new OperationCMD(operationAPI), new HuntCMD(this));
-        setListeners(new OperationEvents(this), new TreasureEvent(this), new VillagerEvents(this));
+        setListeners(new OperationEvents(this), new TreasureEvent(this), new VillagerEvents(operationAPI));
     }
 
     @Override

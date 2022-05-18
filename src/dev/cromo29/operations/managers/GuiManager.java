@@ -50,12 +50,10 @@ public class GuiManager {
         int operationsSize = 0;
         for (Operation operation : operations) {
 
-            if (!player.hasPermission("29Operations.*")) {
-
-                if (operation.isEnabled()) operationsSize++;
-
-            } else operationsSize++;
+            if (operation.isEnabled()) operationsSize++;
         }
+
+        operationsSize = player.hasPermission("29Operations.*") ? operations.size() : operationsSize;
 
         int inventorySize = 27;
 
@@ -151,7 +149,8 @@ public class GuiManager {
                     double value = operation.getValue();
 
                     // Desconto
-                    if (player.hasPermission("29Operations.VIP")) value -= plugin.getConfig().getLong("Settings.Discount");
+                    if (player.hasPermission("29Operations.VIP"))
+                        value -= plugin.getConfig().getLong("Settings.Discount");
 
                     if (value < 0) value = 0;
 
@@ -454,7 +453,7 @@ public class GuiManager {
     private String getPercentage(PlayerOperation playerOperation, Operation operation, Operation.Type type, long amount) {
         long current = 0;
 
-        if (playerOperation.getFinished().contains(operation)) return "&7(100%)";
+        if (playerOperation.getFinisheds().contains(operation)) return "&7(100%)";
 
         ProgressOperation progressOperation = playerOperationManager.getProgressOperation(playerOperation, operation.getName());
 
@@ -471,7 +470,7 @@ public class GuiManager {
     }
 
     private String percent(double value, double max) {
-        double percent = (value * 100D) / max;
+        double percent = (value * 100) / max;
 
         return NumberUtil.formatNumberSimple(percent) + "%";
     }
@@ -479,6 +478,8 @@ public class GuiManager {
     void sendMessage(Player player, String... messages) {
         TXT.sendMessages(player, messages);
     }
+
+    // Código ruim
 
     private boolean updateMiningLore(Operation operation, PlayerOperation playerOperation, List<String> miningLore) {
         boolean mining = false;

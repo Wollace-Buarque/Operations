@@ -5,11 +5,9 @@ import dev.cromo29.operations.api.OperationAPI;
 import dev.cromo29.operations.objects.Operation;
 import dev.cromo29.operations.objects.PlayerOperation;
 import dev.cromo29.operations.objects.ProgressOperation;
+import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PlayerOperationManager {
 
@@ -46,7 +44,7 @@ public class PlayerOperationManager {
         Operation using = playerOperation.getCurrent();
 
         List<Operation> operations = playerOperation.getOperations();
-        List<Operation> finisheds = playerOperation.getFinished();
+        List<Operation> finisheds = playerOperation.getFinisheds();
         List<ProgressOperation> progressOperations = playerOperation.getProgressOperations();
 
         String medals = TXT.createString(operations.stream().map(Operation::getName).toArray(), 0, ", ");
@@ -129,9 +127,13 @@ public class PlayerOperationManager {
 
     public void loadPlayersOperations() {
 
-        if (operationAPI.getPlayerOperationsCFG().getConfigurationSection("Accounts") != null) {
+        ConfigurationSection accountsSection = operationAPI.getPlayerOperationsCFG().getSection("Accounts");
 
-            for (String user : operationAPI.getPlayerOperationsCFG().getConfigurationSection("Accounts")) {
+        if (accountsSection != null) {
+
+            for (String user : accountsSection.getKeys(false)) {
+                ConfigurationSection accountSection = accountsSection.getConfigurationSection(user);
+
                 user = user.toLowerCase();
 
                 List<ProgressOperation> progressOperations = new ArrayList<>();
@@ -142,11 +144,9 @@ public class PlayerOperationManager {
 
                     String operationName = operation.getName().toLowerCase();
 
-                    String path = "Accounts." + user + "." + operationName;
+                    if (accountSection.getStringList("Progress") != null) {
 
-                    if (operationAPI.getPlayerOperationsCFG().getStringList(path + ".Progress") != null) {
-
-                        for (String value : operationAPI.getPlayerOperationsCFG().getStringList(path + ".Progress")) {
+                        for (String value : accountSection.getStringList("Progress")) {
                             Operation.Type type = Operation.Type.valueOf(value.split(", ")[0].toUpperCase());
                             long amount = Long.parseLong(value.split(", ")[1]);
 
@@ -154,8 +154,8 @@ public class PlayerOperationManager {
                         }
                     }
 
-                    if (operationAPI.getPlayerOperationsCFG().getStringList(path + ".Pre-Finished") != null) {
-                        for (String value : operationAPI.getPlayerOperationsCFG().getStringList(path + ".Pre-Finished")) {
+                    if (accountSection.getStringList("Pre-Finished") != null) {
+                        for (String value : accountSection.getStringList("Pre-Finished")) {
                             preFinished.add(Operation.Type.valueOf(value.toUpperCase()));
                         }
                     }
@@ -173,12 +173,15 @@ public class PlayerOperationManager {
 
                 List<Operation> toRemoveList = new ArrayList<>();
                 for (ProgressOperation progressOperation : progressOperations) {
-                    if (!playerOperation.getOperations().contains(progressOperation.getOperation()))
-                        toRemoveList.add(progressOperation.getOperation());
+                    if (playerOperation.getOperations().contains(progressOperation.getOperation())) continue;
+
+
+                    toRemoveList.add(progressOperation.getOperation());
                 }
 
                 for (Operation operation : toRemoveList) {
-                    progressOperations.removeIf(progressOperation -> progressOperation.getOperation().getName().equalsIgnoreCase(operation.getName()));
+                    progressOperations.removeIf(progressOperation
+                            -> progressOperation.getOperation().getName().equalsIgnoreCase(operation.getName()));
                 }
 
                 playerOperation.setProgressOperations(progressOperations);
@@ -211,7 +214,7 @@ public class PlayerOperationManager {
 
             if (playerOperation == null) continue;
 
-            playerOperation.setFinished(finisheds);
+            playerOperation.setFinisheds(finisheds);
         }
     }
 }

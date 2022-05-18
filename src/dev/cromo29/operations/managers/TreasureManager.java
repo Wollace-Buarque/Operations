@@ -2,6 +2,7 @@ package dev.cromo29.operations.managers;
 
 import dev.cromo29.durkcore.SpecificUtils.NumberUtil;
 import dev.cromo29.durkcore.Util.ConfigManager;
+import dev.cromo29.durkcore.Util.MakeItem;
 import dev.cromo29.operations.api.OperationAPI;
 import dev.cromo29.operations.objects.Operation;
 import dev.cromo29.operations.objects.Treasure;
@@ -15,7 +16,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 public class TreasureManager {
 
@@ -33,22 +33,26 @@ public class TreasureManager {
         this.random = new Random();
     }
 
-    public List<Treasure> getTreasures(String operationName) {
-        return operationAPI.getTreasures()
-                .stream()
-                .filter(treasure -> treasure.getOperation().getName().equalsIgnoreCase(operationName))
-                .collect(Collectors.toList());
+    public List<Treasure> getTreasuresFrom(String operationName) {
+        List<Treasure> treasures = new ArrayList<>();
+        for (Treasure treasure : operationAPI.getTreasures()) {
+            if (treasure.getOperation().getName().equalsIgnoreCase(operationName)) treasures.add(treasure);
+        }
+
+        return treasures;
     }
 
     public Treasure getTreasure(String operationName, int level) {
-        return getTreasures(operationName)
-                .stream()
-                .filter(treasure -> treasure.getLevel() == level).findFirst().orElse(null);
+        for (Treasure treasure : getTreasuresFrom(operationName)) {
+            if (treasure.getLevel() == level) return treasure;
+        }
+
+        return null;
     }
 
     public Treasure getRandomTreasure(String operationName, int min, int max) {
 
-        if (getTreasures(operationName).isEmpty()) {
+        if (getTreasuresFrom(operationName).isEmpty()) {
             plugin.log(" <c>Nao existe nenhum tesouro na operacao <f>" + operationName + "<c>!");
             return null;
         }
@@ -63,7 +67,7 @@ public class TreasureManager {
         }
 
         final double random = this.random.nextDouble() * 100;
-        for (Treasure treasure : getTreasures(operationName)) {
+        for (Treasure treasure : getTreasuresFrom(operationName)) {
 
             if (random >= treasure.getMinPercentage() && random < treasure.getMaxPercentage()) return treasure;
 
@@ -115,7 +119,12 @@ public class TreasureManager {
                             itemID = itemID.split(":")[0];
                         }
 
-                        ItemStack itemStack = new ItemStack(Material.getMaterial(Integer.parseInt(itemID)), Integer.parseInt(amount), (short) data);
+                        ItemStack itemStack = new MakeItem(Material.WEB)
+                                .setMaterial(Integer.parseInt(itemID))
+                                .setAmount(Integer.parseInt(amount))
+                                .setData(data)
+                                .build();
+
                         ItemMeta itemMeta = itemStack.getItemMeta();
 
                         if (hasName) itemMeta.setDisplayName(itemName);

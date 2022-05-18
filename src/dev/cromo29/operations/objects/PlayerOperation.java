@@ -16,14 +16,14 @@ public class PlayerOperation {
     private final String user;
     private String tag;
     private Operation current;
-    private List<Operation> operations, finished;
+    private List<Operation> operations, finisheds;
     private List<ProgressOperation> progressOperations;
 
     public PlayerOperation(String user) {
         this.user = user;
         this.operations = new ArrayList<>();
         this.progressOperations = new ArrayList<>();
-        this.finished = new ArrayList<>();
+        this.finisheds = new ArrayList<>();
     }
 
     public String getUser() {
@@ -46,8 +46,8 @@ public class PlayerOperation {
         return operations;
     }
 
-    public List<Operation> getFinished() {
-        return finished;
+    public List<Operation> getFinisheds() {
+        return finisheds;
     }
 
     public List<ProgressOperation> getProgressOperations() {
@@ -58,15 +58,15 @@ public class PlayerOperation {
         this.progressOperations = progressOperations;
     }
 
-    public void setFinished(List<Operation> finished) {
-        this.finished = finished;
+    public void setFinisheds(List<Operation> finisheds) {
+        this.finisheds = finisheds;
     }
 
     public void setOperations(List<Operation> operations) {
         this.operations = operations;
 
         for (Operation operation : operations) {
-            if (finished.contains(operation)) continue;
+            if (finisheds.contains(operation)) continue;
 
             final ProgressOperation progressOperation = new ProgressOperation(operation);
 
@@ -117,7 +117,7 @@ public class PlayerOperation {
     public boolean hasFinished(Operation operation) {
         int remaining = 0;
 
-        if (finished.contains(operation)) return true;
+        if (finisheds.contains(operation)) return true;
 
         for (ProgressOperation progressOperation : progressOperations) {
             if (!progressOperation.getOperation().getName().equalsIgnoreCase(operation.getName())) continue;
@@ -150,9 +150,11 @@ public class PlayerOperation {
     }
 
     public boolean corretlyWorld(Player player) {
-        return PLUGIN.getConfig().getStringList("Settings.Break worlds")
-                .stream()
-                .anyMatch(world -> world.equalsIgnoreCase(player.getWorld().getName()));
+        for (String world : PLUGIN.getConfig().getStringList("Settings.Break worlds")) {
+            if (player.getWorld().getName().equalsIgnoreCase(world)) return true;
+        }
+
+        return false;
     }
 
     public void addOperation(Operation operation) {

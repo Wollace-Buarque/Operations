@@ -249,7 +249,7 @@ public class OperationEvents implements Listener {
 
         final Operation operation = playerOperation.getCurrent();
 
-        if (!operation.getTypes().containsKey(type) || playerOperation.getFinished().contains(operation)) return;
+        if (!operation.getTypes().containsKey(type) || playerOperation.getFinisheds().contains(operation)) return;
 
         final ProgressOperation progressOperation = playerOperationManager.getProgressOperation(playerOperation, operation.getName());
 
@@ -387,7 +387,7 @@ public class OperationEvents implements Listener {
             });
         }
 
-        playerOperation.getFinished().add(operation);
+        playerOperation.getFinisheds().add(operation);
 
         giveReward(player, operation, true);
         sendAnimatedText(player, operation);

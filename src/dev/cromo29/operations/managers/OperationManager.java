@@ -9,16 +9,13 @@ import dev.cromo29.operations.objects.Operation;
 import dev.cromo29.operations.utilitys.Utils;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class OperationManager {
 
@@ -58,10 +55,11 @@ public class OperationManager {
     }
 
     public Operation getOperationByName(String operationName) {
-        return operationAPI.getOperations()
-                .stream()
-                .filter(operation -> operation.getName().equalsIgnoreCase(operationName))
-                .findFirst().orElse(null);
+        for (Operation operation : operationAPI.getOperations()) {
+            if (operation.getName().equalsIgnoreCase(operationName)) return operation;
+        }
+
+        return null;
     }
 
     public List<Operation> getOperations() {
@@ -75,9 +73,9 @@ public class OperationManager {
 
         if (location == null) return;
 
-        for (Entity entity : Utils.getEntitiesInChunks(location, 1)) {
+        Utils.getEntitiesInChunks(location, 1).forEach(entity -> {
             if (entity.getType() == EntityType.VILLAGER) entity.remove();
-        }
+        });
 
         textAnimation = new TextAnimation(new TextAnimation.Hypixel(
                 "VENDEDOR DE OPERAÇÕES",
@@ -104,21 +102,24 @@ public class OperationManager {
     public void loadOperations() {
         operationAPI.getOperations().clear();
 
-        if (operationAPI.getOperationsCFG().getConfigurationSection("Operations") == null) return;
+        ConfigurationSection operationsSection = operationAPI.getOperationsCFG().getSection("Operations");
 
-        for (String name : operationAPI.getOperationsCFG().getConfigurationSection("Operations")) {
+        if (operationsSection == null) return;
 
-            String display = operationAPI.getOperationsCFG().getString("Operations." + name + ".Display");
-            String icone = operationAPI.getOperationsCFG().getString("Operations." + name + ".ID");
-            String tag = operationAPI.getOperationsCFG().getString("Operations." + name + ".Tag");
-            long value = operationAPI.getOperationsCFG().getLong("Operations." + name + ".Value");
-            boolean enabled = operationAPI.getOperationsCFG().getBoolean("Operations." + name + ".Enabled");
+        for (String name : operationsSection.getKeys(false)) {
+            ConfigurationSection operationSection = operationsSection.getConfigurationSection(name);
 
-            List<String> types = operationAPI.getOperationsCFG().getStringList("Operations." + name + ".Type");
+            String display = operationSection.getString("Display");
+            String icone = operationSection.getString("ID");
+            String tag = operationSection.getString("Tag");
+            long value = operationSection.getLong("Value");
+            boolean enabled = operationSection.getBoolean("Enabled");
+
+            List<String> types = operationSection.getStringList("Type");
             List<String> lore = new ArrayList<>();
 
-            for (String text : operationAPI.getOperationsCFG().getStringList("Operations." + name + ".Lore"))
-                lore.add(text.replace("{value}", "" + value));
+            operationSection.getStringList("Lore")
+                    .forEach(text -> lore.add(text.replace("{value}", "" + value)));
 
             Map<Operation.Type, Long> typesMap = new HashMap<>();
 

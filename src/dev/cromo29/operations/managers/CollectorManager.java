@@ -132,64 +132,60 @@ public class CollectorManager {
     }
 
     public void deleteItem(String jsonItem) {
-        TXT.runAsynchronously(plugin, () -> {
 
-            for (String user : operationAPI.getCollectorCFG().getConfigurationSection("Collector")) {
+        for (String user : operationAPI.getCollectorCFG().getConfigurationSection("Collector")) {
 
-                String path = "Collector." + user + ".Items";
+            String path = "Collector." + user + ".Items";
 
-                int size = 0;
-                for (String id : operationAPI.getCollectorCFG().getConfigurationSection(path)) {
-                    size++;
+            int size = 0;
+            for (String id : operationAPI.getCollectorCFG().getConfigurationSection(path)) {
+                size++;
 
-                    String itemString = operationAPI.getCollectorCFG().getString("Collector." + user + ".Items." + id);
+                String itemString = operationAPI.getCollectorCFG().getString("Collector." + user + ".Items." + id);
 
-                    if (itemString.equalsIgnoreCase(jsonItem)) {
-                        size -= 1;
+                if (itemString.equalsIgnoreCase(jsonItem)) {
+                    size -= 1;
 
-                        operationAPI.getCollectorCFG().set(path + "." + id, null);
-                        break;
-                    }
-                }
-
-                if (size == 0) operationAPI.getCollectorCFG().set("Collector." + user, null);
-
-                operationAPI.getCollectorCFG().save();
-            }
-
-        });
-    }
-
-    public void saveItem(Player player, ItemStack item) {
-        TXT.runAsynchronously(plugin, () -> {
-
-            boolean doUpdate = false;
-            for (String user : operationAPI.getCollectorCFG().getConfigurationSection("Collector")) {
-
-                if (player.getName().equalsIgnoreCase(user)) {
-                    doUpdate = true;
-
-                    String path = "Collector." + user + ".Items";
-
-                    if (operationAPI.getCollectorCFG().getConfigurationSection(path) == null) {
-                        operationAPI.getCollectorCFG().setItemStackS(path + ".1", item);
-                    } else {
-                        int index = operationAPI.getCollectorCFG().getConfigurationSection(path).size() + 1;
-
-                        operationAPI.getCollectorCFG().setItemStackS(path + "." + index, item);
-                    }
-
-                    operationAPI.getCollectorCFG().save();
+                    operationAPI.getCollectorCFG().set(path + "." + id, null);
                     break;
                 }
             }
 
-            if (!doUpdate) {
-                operationAPI.getCollectorCFG().setItemStackS("Collector." + player.getName().toLowerCase() + ".Items.1", item);
-                operationAPI.getCollectorCFG().save();
-            }
+            if (size == 0) operationAPI.getCollectorCFG().set("Collector." + user, null);
 
-        });
+            operationAPI.getCollectorCFG().save();
+        }
+
+    }
+
+    public void saveItem(Player player, ItemStack item) {
+
+        boolean doUpdate = false;
+        for (String user : operationAPI.getCollectorCFG().getConfigurationSection("Collector")) {
+
+            if (player.getName().equalsIgnoreCase(user)) {
+                doUpdate = true;
+
+                String path = "Collector." + user + ".Items";
+
+                if (operationAPI.getCollectorCFG().getConfigurationSection(path) == null) {
+                    operationAPI.getCollectorCFG().setItemStackS(path + ".1", item);
+                } else {
+                    int index = operationAPI.getCollectorCFG().getConfigurationSection(path).size() + 1;
+
+                    operationAPI.getCollectorCFG().setItemStackS(path + "." + index, item);
+                }
+
+                operationAPI.getCollectorCFG().save();
+                break;
+            }
+        }
+
+        if (!doUpdate) {
+            operationAPI.getCollectorCFG().setItemStackS("Collector." + player.getName().toLowerCase() + ".Items.1", item);
+            operationAPI.getCollectorCFG().save();
+        }
+
     }
 
     public void loadCollectors() {
