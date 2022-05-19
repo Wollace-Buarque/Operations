@@ -14,7 +14,7 @@ public class OperationPlugin extends DurkPlugin {
 
     @Override
     public void onStart() {
-        this.operationAPI = new OperationAPI();
+        this.operationAPI = new OperationAPI(this);
 
         registerCommands(new OperationCMD(operationAPI), new HuntCMD(this));
         setListeners(new OperationEvents(this), new TreasureEvent(this), new VillagerEvents(operationAPI));

@@ -27,245 +27,183 @@ public class GuiManager {
 
     private final OperationAPI operationAPI;
 
-    private final OperationManager operationManager;
     private final PlayerOperationManager playerOperationManager;
 
-    public GuiManager(OperationPlugin plugin) {
-        this.plugin = plugin;
+    public GuiManager(OperationAPI operationAPI, PlayerOperationManager playerOperationManager) {
+        this.operationAPI = operationAPI;
+        this.plugin = operationAPI.getPlugin();
 
-        this.operationAPI = plugin.getOperationAPI();
-
-        this.operationManager = operationAPI.getOperationManager();
-        this.playerOperationManager = operationManager.getPlayerOperationManager();
+        this.playerOperationManager = playerOperationManager;
     }
 
     public void showOperations(Player player) {
-        List<Operation> operations = operationManager.getOperations();
+        List<Operation> operations = operationAPI.getOperationManager().getOperations();
 
         if (operations.isEmpty()) {
             sendMessage(player, " <c>Nenhuma operação no momento!");
             return;
         }
 
-        int operationsSize = 0;
+        int enabledOperationsSize = 0;
         for (Operation operation : operations) {
 
-            if (operation.isEnabled()) operationsSize++;
+            if (operation.isEnabled()) enabledOperationsSize++;
         }
 
-        operationsSize = player.hasPermission("29Operations.*") ? operations.size() : operationsSize;
+        if (enabledOperationsSize == 0 && !player.hasPermission("29Operations.*")) {
+            sendMessage(player, " <c>Nenhuma operação ativada no momento!");
+            return;
+        }
 
-        int inventorySize = 27;
+        enabledOperationsSize = player.hasPermission("29Operations.*") ? operations.size() : enabledOperationsSize;
 
-        if (operationsSize > 7) inventorySize = 36;
-        if (operationsSize > 14) inventorySize = 45;
-        if (operationsSize > 21) inventorySize = 54;
+        int inventorySize = Math.min(27 + ((enabledOperationsSize / 7) * 9), 54);
 
         Inv inv = new Inv(inventorySize, "Operações do servidor:");
         inv.setIgnorePlayerInventoryClick(true, true);
 
-        int operationAmount = 0;
-
         // Desconto
-        long discount = 0;
-        if (player.hasPermission("29Operations.VIP")) discount = plugin.getConfig().getLong("Settings.Discount");
+        double discount = player.hasPermission("29Operations.VIP") ?
+                plugin.getConfig().getDouble("Settings.Discount")
+                :
+                0;
 
         List<String> lore = new ArrayList<>();
-
         for (Operation operation : operations) {
-            if (operation.isEnabled()) {
-                operationAmount++;
 
-                lore.clear();
+            lore.clear();
+            for (String text : operation.getLore()) {
 
-                for (String text : operation.getLore()) {
-                    if (text.contains(operation.getValue() + "")) {
-                        double discountPercentage = ((double) discount / operation.getValue()) * 100;
+                if (text.contains(operation.getValue() + "")) {
+                    double discountPercentage = (discount / operation.getValue()) * 100;
 
-                        double result = operation.getValue() - discount;
+                    double result = operation.getValue() - discount;
 
-                        if (result < 0) {
-                            result = 0;
-                            discountPercentage = 100;
-                        }
-
-                        if (player.hasPermission("29Operations.VIP"))
-                            text = text.replace("" + operation.getValue(), result + " &7(" + NumberUtil.formatNumberSimple(discountPercentage) + "% de desconto)");
-                        else text = text.replace("" + operation.getValue(), "" + result);
+                    if (result < 0) {
+                        result = 0;
+                        discountPercentage = 100;
                     }
-                    lore.add(text);
+
+                    text = player.hasPermission("29Operations.VIP") ?
+                            text.replace(operation.getValue() + "", result + " &7(" + NumberUtil.formatNumberSimple(discountPercentage) + "% de desconto)")
+                            :
+                            text.replace(operation.getValue() + "", result + "");
                 }
 
-                ItemStack currentItem = new MakeItem(operation.getIcon()).setLore(lore).build();
-
-                inv.setInMiddle(currentItem, event -> {
-
-                    PlayerOperation playerOperation = playerOperationManager.getPlayerOperation(player.getName());
-
-                    if (player.hasPermission("29Operations.*") && event.getClick() == ClickType.RIGHT) {
-
-                        String title = "<0>Desativar ope. " + operation.getDisplay() + "<0>?";
-
-                        if (!operation.isEnabled()) title = "<0>Ativar ope. " + operation.getDisplay() + "<0>?";
-
-                        Confirmation.confirm(title, operation.getIcon(), player, accept -> {
-
-                            String enabled = operation.isEnabled() ? "desativou" : "ativou";
-                            operation.setEnabled(!operation.isEnabled());
-
-                            sendMessage(player, "<a>Você " + enabled + " a operação <f>" + operation.getDisplay() + "<a>!");
-
-                            for (Player user : plugin.getServer().getOnlinePlayers()) {
-                                String status = operation.isEnabled() ? "ativada" : "desativada";
-
-                                sendMessage(user, "", " <e>A operação <f>" + operation.getDisplay() + " <e>foi " + status + "!", "");
-
-                                user.playSound(user.getLocation(), Sound.CLICK, 1, 1);
-                            }
-
-                            operationAPI.getOperationsCFG().set("Operations." + operation.getName() + ".Enabled", operation.isEnabled());
-                            operationAPI.getOperationsCFG().save();
-
-                        }, reject -> {
-                            sendMessage(player, "<a>Confirmação cancelada com sucesso!");
-                            player.playSound(player.getLocation(), Sound.CLICK, 1, 1);
-                        });
-                        return;
-                    }
-
-                    if (playerOperation == null) {
-                        sendMessage(player,
-                                "",
-                                " <c>Ocorreu um erro ao adquirir esta operação!",
-                                " <c>Reentre no servidor e tente novamente!",
-                                " <c>Caso o erro continue, contate um STAFF!",
-                                "");
-
-                        player.playSound(player.getLocation(), Sound.VILLAGER_NO, 1, 1);
-                        player.closeInventory();
-                        return;
-                    }
-
-                    double value = operation.getValue();
-
-                    // Desconto
-                    if (player.hasPermission("29Operations.VIP"))
-                        value -= plugin.getConfig().getLong("Settings.Discount");
-
-                    if (value < 0) value = 0;
-
-                    if (!playerOperation.hasMoney(player, operation)) {
-                        double needed = value - VaultAPI.getEconomy().getBalance(player);
-
-                        sendMessage(player, "",
-                                " <c>Você precisa de mais <f>" + NumberUtil.formatNumberSimple(needed) + " coins<c> para comprar,",
-                                " <c>a operação <f>" + operation.getDisplay() + "<c>!",
-                                "");
-                        return;
-                    }
-
-                    if (player.getInventory().firstEmpty() == -1) {
-                        sendMessage(player, "<c>Seu inventário está cheio!");
-                        return;
-                    }
-
-                    double finalValue = value;
-                    Confirmation.confirm("Comprar operação " + operation.getName() + "?", currentItem, player, accept -> {
-
-                        List<String> anotherLore = ListUtil.getColorizedStringList(
-                                "",
-                                " &7Operação: &f" + operation.getName(),
-                                " &7Clique com o <f>papel na mão <7>para ativar a operação. ",
-                                "");
-
-                        player.getInventory().addItem(new MakeItem(operation.getIcon())
-                                .setMaterial(Material.PAPER)
-                                .setData(0)
-                                .setLore(anotherLore)
-                                .build());
-
-                        VaultAPI.getEconomy().withdrawPlayer(player, finalValue);
-
-                        player.playSound(player.getLocation(), Sound.LEVEL_UP, 1, 1);
-
-                        sendMessage(player, "",
-                                " <a>Você adquiriu a operação <f>" + operation.getDisplay() + "<a>!",
-                                "");
-
-                        PlayerUtil.sendActionBar(player, "<a>Operação <f>" + operation.getDisplay() + " <a>adquirida!");
-
-                        player.closeInventory();
-                    }, reject -> {
-                        sendMessage(player, "",
-                                " <c>Você cancelou a compra da operação <f>" + operation.getDisplay() + "<c>!",
-                                "");
-
-                        PlayerUtil.sendActionBar(player, "<c>Compra cancelada!");
-
-                        player.closeInventory();
-                    });
-
-                });
-            } else {
-
-                if (!player.hasPermission("29Operations.*")) continue;
-
-                inv.setInMiddle(operation.getIcon(), event -> {
-
-                    player.playSound(player.getLocation(), Sound.CLICK, 1, 1);
-
-                    if (!player.hasPermission("29Operations.*")) {
-                        player.closeInventory();
-                        return;
-                    }
-
-                    if (event.getClick() == ClickType.RIGHT) {
-
-                        String title = "<0>Desativar ope. " + operation.getDisplay() + "<0>?";
-
-                        if (!operation.isEnabled()) title = "<0>Ativar ope. " + operation.getDisplay() + "<0>?";
-
-                        Confirmation.confirm(title, operation.getIcon(), player, accept -> {
-
-                            String enabled = operation.isEnabled() ? "desativou" : "ativou";
-                            operation.setEnabled(!operation.isEnabled());
-
-                            sendMessage(player, "<a>Você " + enabled + " a operação <f>" + operation.getDisplay() + "<a>!");
-
-                            for (Player user : plugin.getServer().getOnlinePlayers()) {
-                                String status = operation.isEnabled() ? "ativada" : "desativada";
-
-                                sendMessage(user, "", " <e>A operação <f>" + operation.getDisplay() + " <e>foi " + status + "!", "");
-
-                                user.playSound(user.getLocation(), Sound.CLICK, 1, 1);
-                            }
-
-                            operationAPI.getOperationsCFG().set("Operations." + operation.getName() + ".Enabled", operation.isEnabled());
-                            operationAPI.getOperationsCFG().save();
-
-                        }, reject -> {
-
-                            sendMessage(player, "<a>Confirmação cancelada com sucesso!");
-                            player.playSound(player.getLocation(), Sound.CLICK, 1, 1);
-
-                        });
-
-                    } else {
-
-                        sendMessage(player,
-                                "",
-                                " <c>A operação <f>" + operation.getDisplay() + " <c>está desativada!",
-                                "");
-
-                        player.playSound(player.getLocation(), Sound.CLICK, 1, 1);
-                    }
-                });
+                lore.add(text);
             }
-        }
 
-        if (operationAmount == 0 && !player.hasPermission("Operations.*")) {
-            sendMessage(player, " <c>Nenhuma operação disponivel no momento!");
-            return;
+            ItemStack currentItem = new MakeItem(operation.getIcon()).setLore(lore).build();
+
+            inv.setInMiddle(currentItem, event -> {
+
+                PlayerOperation playerOperation = playerOperationManager.getPlayerOperation(player.getName());
+
+                if (player.hasPermission("29Operations.*") && event.getClick() == ClickType.RIGHT) {
+
+                    String title = "<0>Desativar ope. " + operation.getDisplay() + "<0>?";
+
+                    if (!operation.isEnabled()) title = "<0>Ativar ope. " + operation.getDisplay() + "<0>?";
+
+                    Confirmation.confirm(title, operation.getIcon(), player, accept -> {
+
+                        String enabled = operation.isEnabled() ? "desativou" : "ativou";
+                        operation.setEnabled(!operation.isEnabled());
+
+                        sendMessage(player, "<a>Você " + enabled + " a operação <f>" + operation.getDisplay() + "<a>!");
+
+                        for (Player user : plugin.getServer().getOnlinePlayers()) {
+                            String status = operation.isEnabled() ? "ativada" : "desativada";
+
+                            sendMessage(user, "", " <e>A operação <f>" + operation.getDisplay() + " <e>foi " + status + "!", "");
+
+                            user.playSound(user.getLocation(), Sound.CLICK, 1, 1);
+                        }
+
+                        operationAPI.getOperationsCFG().set("Operations." + operation.getName() + ".Enabled", operation.isEnabled());
+                        operationAPI.getOperationsCFG().save();
+
+                    }, reject -> {
+                        sendMessage(player, "<a>Confirmação cancelada com sucesso!");
+                        player.playSound(player.getLocation(), Sound.CLICK, 1, 1);
+                    });
+                    return;
+                }
+
+                if (playerOperation == null) {
+                    sendMessage(player,
+                            "",
+                            " <c>Ocorreu um erro ao adquirir esta operação!",
+                            " <c>Reentre no servidor e tente novamente!",
+                            " <c>Caso o erro continue, contate um STAFF!",
+                            "");
+
+                    player.playSound(player.getLocation(), Sound.VILLAGER_NO, 1, 1);
+                    player.closeInventory();
+                    return;
+                }
+
+                // Desconto
+                double value = player.hasPermission("29Operations.VIP") ?
+                        operation.getValue() - plugin.getConfig().getDouble("Settings.Discount")
+                        :
+                        operation.getValue();
+
+                if (value < 0) value = 0;
+
+                if (!playerOperation.hasMoney(player, operation)) {
+                    double needed = value - VaultAPI.getEconomy().getBalance(player);
+
+                    sendMessage(player, "",
+                            " <c>Você precisa de mais <f>" + NumberUtil.formatNumberSimple(needed) + " coins<c> para comprar,",
+                            " <c>a operação <f>" + operation.getDisplay() + "<c>!",
+                            "");
+                    return;
+                }
+
+                if (player.getInventory().firstEmpty() == -1) {
+                    sendMessage(player, " <c>Seu inventário está cheio!");
+                    return;
+                }
+
+                double finalValue = value;
+                Confirmation.confirm("Comprar operação " + operation.getName() + "?", currentItem, player, accept -> {
+
+                    List<String> anotherLore = ListUtil.getColorizedStringList(
+                            "",
+                            " &7Operação: &f" + operation.getName(),
+                            " &7Clique com o <f>papel na mão <7>para ativar a operação. ",
+                            "");
+
+                    player.getInventory().addItem(new MakeItem(operation.getIcon())
+                            .setMaterial(Material.PAPER)
+                            .setData(0)
+                            .setLore(anotherLore)
+                            .build());
+
+                    VaultAPI.getEconomy().withdrawPlayer(player, finalValue);
+
+                    player.playSound(player.getLocation(), Sound.LEVEL_UP, 1, 1);
+
+                    sendMessage(player,
+                            "",
+                            " <a>Você adquiriu a operação <f>" + operation.getDisplay() + "<a>!",
+                            "");
+
+                    PlayerUtil.sendActionBar(player, "<a>Operação <f>" + operation.getDisplay() + " <a>adquirida!");
+
+                    player.closeInventory();
+                }, reject -> {
+                    sendMessage(player, "",
+                            " <c>Você cancelou a compra da operação <f>" + operation.getDisplay() + "<c>!",
+                            "");
+
+                    PlayerUtil.sendActionBar(player, "<c>Compra cancelada!");
+
+                    player.closeInventory();
+                });
+
+            });
         }
 
         inv.open(player);
@@ -300,7 +238,7 @@ public class GuiManager {
 
                 player.playSound(player.getLocation(), Sound.CLICK, 1, 1);
 
-                operationSettings(player, operation, playerOperation);
+                showOperationSettings(player, operation, playerOperation);
             });
         }
 
@@ -339,7 +277,7 @@ public class GuiManager {
         player.playSound(player.getLocation(), Sound.CHEST_OPEN, 1, 1);
     }
 
-    private void operationSettings(Player player, Operation operation, PlayerOperation playerOperation) {
+    private void showOperationSettings(Player player, Operation operation, PlayerOperation playerOperation) {
         Inv inv = new Inv(27, "Detalhes da operação:");
         inv.setIgnorePlayerInventoryClick(true, true);
 
@@ -352,7 +290,8 @@ public class GuiManager {
         inv.setItem(11, new MakeItem(operation.getIcon())
                 .setName(" <r> ")
                 .setLore(new ArrayList<>())
-                .addLoreList("",
+                .addLoreList(
+                        "",
                         " &7Operação &e" + operation.getDisplay() + "&7! ",
                         " &7Tag: &f" + operation.getTag(),
                         "",
@@ -367,7 +306,7 @@ public class GuiManager {
 
                 if (tag != null && tag.endsWith(" ")) tag = tag.substring(0, tag.length() - 1);
 
-                if (playerOperation.getTag() != null && !playerOperation.getTag().equalsIgnoreCase("Nenhuma"))
+                if (playerOperation.getTag() != null && !playerOperation.getTag().equalsIgnoreCase("Nenhuma")) {
                     if (playerOperation.getTag().equalsIgnoreCase(operation.getTag())) {
 
                         playerOperation.setTag("Nenhuma");
@@ -379,8 +318,10 @@ public class GuiManager {
                         player.playSound(player.getLocation(), Sound.VILLAGER_YES, 1, 1);
                         return;
                     }
+                }
 
                 player.playSound(player.getLocation(), Sound.VILLAGER_YES, 1, 1);
+
                 playerOperation.setTag(operation.getTag());
 
                 sendMessage(player,
@@ -418,7 +359,7 @@ public class GuiManager {
         headLore.add("");
 
         if (!updateHeadLore(operation, playerOperation, headLore))
-            headLore.add(" &cNenhuma missão sobre abates nesta operação. ");
+            headLore.add(" &cNenhuma missão de abates nesta operação. ");
 
         headLore.add("");
 
@@ -431,7 +372,7 @@ public class GuiManager {
         miningLore.add("");
 
         if (!updateMiningLore(operation, playerOperation, miningLore))
-            miningLore.add(" &cNenhuma missão sobre mineração nesta operação. ");
+            miningLore.add(" &cNenhuma missão de mineração nesta operação. ");
 
         miningLore.add("");
 
@@ -441,11 +382,10 @@ public class GuiManager {
                 .build());
 
         inv.setItem(26, new MakeItem(Material.ARROW)
-                .setName(" <r> ")
-                .addLoreList("", " <e>Clique aqui para voltar.", "")
-                .build(), event -> {
-            showPlayerOperations(player);
-        });
+                        .setName(" <r> ")
+                        .addLoreList("", " <e>Clique aqui para voltar.", "")
+                        .build(),
+                event -> showPlayerOperations(player));
 
         inv.open(player);
     }

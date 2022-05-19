@@ -12,6 +12,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -119,9 +120,7 @@ public class Utils {
         Set<Entity> entities = new HashSet<>();
         for (int x = -16 * chunkRadius; x <= 16 * chunkRadius; x += 16) {
             for (int z = -16 * chunkRadius; z <= 16 * chunkRadius; z += 16) {
-                for (Entity entity : block.getRelative(x, 0, z).getChunk().getEntities()) {
-                    entities.add(entity);
-                }
+                Collections.addAll(entities, block.getRelative(x, 0, z).getChunk().getEntities());
             }
         }
         return entities;

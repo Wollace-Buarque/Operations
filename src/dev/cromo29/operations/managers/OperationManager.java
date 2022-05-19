@@ -31,15 +31,15 @@ public class OperationManager {
     private TextAnimation textAnimation;
     private Villager villager;
 
-    public OperationManager(OperationPlugin plugin) {
-        this.plugin = plugin;
+    public OperationManager(OperationAPI operationAPI) {
+        this.operationAPI = operationAPI;
 
-        this.operationAPI = plugin.getOperationAPI();
+        this.plugin = operationAPI.getPlugin();
 
         this.playerOperationManager = new PlayerOperationManager(operationAPI);
-        this.collectorManager = new CollectorManager(plugin);
-        this.treasureManager = new TreasureManager(plugin);
-        this.guiManager = new GuiManager(plugin);
+        this.collectorManager = new CollectorManager(operationAPI);
+        this.treasureManager = new TreasureManager(operationAPI);
+        this.guiManager = new GuiManager(operationAPI, playerOperationManager);
     }
 
     public void load() {

@@ -143,9 +143,8 @@ public class TreasureEvent implements Listener {
 
         player.updateInventory();
 
-        Vector vector = player.getEyeLocation().getDirection().normalize().multiply(-1);
+        player.setVelocity(player.getEyeLocation().getDirection().normalize().multiply(-1));
 
-        player.setVelocity(vector);
         player.playSound(player.getLocation(), Sound.LEVEL_UP, 1, 1);
 
         sendMessage(player, "",

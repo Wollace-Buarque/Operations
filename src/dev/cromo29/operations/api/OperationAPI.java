@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class OperationAPI {
 
-    private final OperationPlugin PLUGIN = OperationPlugin.get();
+    private final OperationPlugin plugin;
 
     private Map<String, PlayerOperation> playerOperationMap;
     private Map<String, Collector> playerCollectorMap;
@@ -30,12 +30,13 @@ public class OperationAPI {
 
     private OperationManager operationManager;
 
-    public OperationAPI() {
+    public OperationAPI(OperationPlugin plugin) {
+        this.plugin = plugin;
         init();
     }
 
     public void reloadAll() {
-        PLUGIN.reloadConfig();
+        plugin.reloadConfig();
 
         locationsGson.reload();
 
@@ -58,23 +59,22 @@ public class OperationAPI {
 
         loadConfigs();
 
-        operationManager = new OperationManager(OperationPlugin.get());
-
+        operationManager = new OperationManager(this);
         operationManager.load();
     }
 
     private void loadConfigs() {
-        final String storagePath = PLUGIN.getDataFolder().getPath() + File.separator + "storage";
+        final String storagePath = plugin.getDataFolder().getPath() + File.separator + "storage";
 
-        operationsFile = new ConfigManager(PLUGIN, "operations.yml");
-        treasuresFile = new ConfigManager(PLUGIN, "treasures.yml");
+        operationsFile = new ConfigManager(plugin, "operations.yml");
+        treasuresFile = new ConfigManager(plugin, "treasures.yml");
 
         playerOperationsFile = new ConfigManager(storagePath, "progress.yml");
         medalsFile = new ConfigManager(storagePath, "medals.yml");
         collectorsFile = new ConfigManager(storagePath, "collector.yml");
         locationsGson = new GsonManager(storagePath, "locations.json").prepareGson();
 
-        PLUGIN.saveDefaultConfig();
+        plugin.saveDefaultConfig();
     }
 
     public Map<String, PlayerOperation> getPlayerOperationMap() {
@@ -141,4 +141,8 @@ public class OperationAPI {
         return operationManager.getGuiManager();
     }
 
+
+    public OperationPlugin getPlugin() {
+        return plugin;
+    }
 }

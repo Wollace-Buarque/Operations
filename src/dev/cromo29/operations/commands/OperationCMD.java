@@ -15,6 +15,7 @@ public class OperationCMD extends DurkCommand {
 
     @Override
     public void perform() {
+
         if (!isArgsLength(1)) {
             operationAPI.getGuiManager().showPlayerOperations(asPlayer());
             return;

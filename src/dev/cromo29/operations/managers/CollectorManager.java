@@ -20,9 +20,9 @@ public class CollectorManager {
     private final OperationPlugin plugin;
     private final OperationAPI operationAPI;
 
-    public CollectorManager(OperationPlugin plugin) {
-        this.plugin = plugin;
-        this.operationAPI = plugin.getOperationAPI();
+    public CollectorManager(OperationAPI operationAPI) {
+        this.operationAPI = operationAPI;
+        this.plugin = operationAPI.getPlugin();
     }
 
     public void openCollector(Player player) {

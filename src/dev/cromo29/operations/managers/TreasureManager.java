@@ -25,10 +25,9 @@ public class TreasureManager {
 
     private final Random random;
 
-    public TreasureManager(OperationPlugin plugin) {
-        this.plugin = plugin;
-
-        this.operationAPI = plugin.getOperationAPI();
+    public TreasureManager(OperationAPI operationAPI) {
+        this.operationAPI = operationAPI;
+        this.plugin = operationAPI.getPlugin();
 
         this.random = new Random();
     }
