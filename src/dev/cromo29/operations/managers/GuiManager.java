@@ -326,7 +326,7 @@ public class GuiManager {
 
                 sendMessage(player,
                         "",
-                        "<a>Você selecionou a tag <f>" + tag + "<a>!",
+                        " <a>Você ativou a tag <f>" + tag + "<a>!",
                         "");
 
             } else if (event.getClick().isRightClick()) {
@@ -340,6 +340,9 @@ public class GuiManager {
                 }
 
                 playerOperation.setCurrent(operation);
+
+                operationAPI.getMedalsCFG().set("Accounts." + player.getName().toLowerCase() + ".Using", operation.getName());
+                operationAPI.getMedalsCFG().save();
 
                 sendMessage(player,
                         "",

@@ -33,10 +33,12 @@ public class OperationManager {
 
     public OperationManager(OperationAPI operationAPI) {
         this.operationAPI = operationAPI;
-
         this.plugin = operationAPI.getPlugin();
 
-        this.playerOperationManager = new PlayerOperationManager(operationAPI);
+
+        loadOperations();
+
+        this.playerOperationManager = new PlayerOperationManager(operationAPI, this);
         this.collectorManager = new CollectorManager(operationAPI);
         this.treasureManager = new TreasureManager(operationAPI);
         this.guiManager = new GuiManager(operationAPI, playerOperationManager);
@@ -112,7 +114,7 @@ public class OperationManager {
             String display = operationSection.getString("Display");
             String icone = operationSection.getString("ID");
             String tag = operationSection.getString("Tag");
-            long value = operationSection.getLong("Value");
+            double value = operationSection.getDouble("Value");
             boolean enabled = operationSection.getBoolean("Enabled");
 
             List<String> types = operationSection.getStringList("Type");

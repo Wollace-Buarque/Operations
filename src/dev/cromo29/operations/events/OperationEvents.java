@@ -145,6 +145,9 @@ public class OperationEvents implements Listener {
         playerOperation.addOperation(operation);
         playerOperation.setCurrent(operation);
 
+        operationAPI.getMedalsCFG().set("Accounts." + player.getName().toLowerCase() + ".Using", operation.getName());
+        operationAPI.getMedalsCFG().save();
+
         player.playSound(player.getLocation(), Sound.LEVEL_UP, 1, 1);
 
         sendGMessage("",

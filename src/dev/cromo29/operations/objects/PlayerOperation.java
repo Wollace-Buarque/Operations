@@ -80,20 +80,6 @@ public class PlayerOperation {
 
     public void setCurrent(Operation operation) {
         this.current = operation;
-
-        final OperationAPI operationAPI = PLUGIN.getOperationAPI();
-
-        if (operationAPI.getMedalsCFG().getString("Accounts." + user.toLowerCase() + ".Using") == null) {
-            operationAPI.getMedalsCFG().set("Accounts." + user.toLowerCase() + ".Using", operation.getName());
-            operationAPI.getMedalsCFG().save();
-            return;
-        }
-
-        if (operationAPI.getMedalsCFG().getString("Accounts." + user.toLowerCase() + ".Using").equalsIgnoreCase(operation.getName()))
-            return;
-
-        operationAPI.getMedalsCFG().set("Accounts." + user.toLowerCase() + ".Using", operation.getName());
-        operationAPI.getMedalsCFG().save();
     }
 
     public int getCompleteds() {

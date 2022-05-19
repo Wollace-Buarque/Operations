@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Operation {
-
     private final String name, display, tag;
     private final ItemStack icon;
     private final List<String> lore;

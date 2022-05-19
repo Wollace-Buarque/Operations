@@ -15,10 +15,9 @@ public class PlayerOperationManager {
 
     private final OperationManager operationManager;
 
-    public PlayerOperationManager(OperationAPI operationAPI) {
+    public PlayerOperationManager(OperationAPI operationAPI, OperationManager operationManager) {
         this.operationAPI = operationAPI;
-
-        this.operationManager = operationAPI.getOperationManager();
+        this.operationManager = operationManager;
     }
 
     public List<Operation> getPlayerOperations(String playerName) {
@@ -98,6 +97,7 @@ public class PlayerOperationManager {
         for (String user : operationAPI.getMedalsCFG().getConfigurationSection("Accounts")) {
 
             List<Operation> operations = new ArrayList<>();
+
             Operation using = operationManager.getOperationByName(operationAPI.getMedalsCFG().getString("Accounts." + user + ".Using"));
 
             String medals = operationAPI.getMedalsCFG().getString("Accounts." + user + ".Medals");
@@ -141,8 +141,6 @@ public class PlayerOperationManager {
                 for (Operation operation : operationManager.getOperations()) {
                     Map<Operation.Type, Long> progress = new HashMap<>();
                     List<Operation.Type> preFinished = new ArrayList<>();
-
-                    String operationName = operation.getName().toLowerCase();
 
                     if (accountSection.getStringList("Progress") != null) {
 
