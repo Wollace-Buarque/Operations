@@ -1,7 +1,7 @@
 package dev.cromo29.operations.objects;
 
-import dev.cromo29.durkcore.Util.TXT;
-import dev.cromo29.durkcore.Util.VaultAPI;
+import dev.cromo29.durkcore.util.TXT;
+import dev.cromo29.durkcore.util.VaultAPI;
 import dev.cromo29.operations.OperationPlugin;
 import dev.cromo29.operations.api.OperationAPI;
 import org.bukkit.entity.Player;

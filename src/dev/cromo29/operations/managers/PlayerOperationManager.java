@@ -1,6 +1,6 @@
 package dev.cromo29.operations.managers;
 
-import dev.cromo29.durkcore.Util.TXT;
+import dev.cromo29.durkcore.util.TXT;
 import dev.cromo29.operations.api.OperationAPI;
 import dev.cromo29.operations.objects.Operation;
 import dev.cromo29.operations.objects.PlayerOperation;
@@ -126,7 +126,6 @@ public class PlayerOperationManager {
     }
 
     public void loadPlayersOperations() {
-
         ConfigurationSection accountsSection = operationAPI.getPlayerOperationsCFG().getSection("Accounts");
 
         if (accountsSection != null) {

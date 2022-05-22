@@ -1,12 +1,15 @@
 package dev.cromo29.operations;
 
-import dev.cromo29.durkcore.API.DurkPlugin;
+import dev.cromo29.durkcore.api.DurkPlugin;
 import dev.cromo29.operations.api.OperationAPI;
 import dev.cromo29.operations.commands.HuntCMD;
 import dev.cromo29.operations.commands.OperationCMD;
 import dev.cromo29.operations.events.OperationEvents;
 import dev.cromo29.operations.events.TreasureEvent;
 import dev.cromo29.operations.events.VillagerEvents;
+import dev.cromo29.operations.objects.PlayerOperation;
+
+import java.util.Map;
 
 public class OperationPlugin extends DurkPlugin {
 
@@ -22,7 +25,11 @@ public class OperationPlugin extends DurkPlugin {
 
     @Override
     public void onStop() {
-        operationAPI.getPlayerOperationMap().values().forEach(playerOperation -> {
+        Map<String, PlayerOperation> playerOperationMap = operationAPI.getPlayerOperationMap();
+
+        if (playerOperationMap == null) return;
+
+        playerOperationMap.values().forEach(playerOperation -> {
 
             if (playerOperation.getOperations().isEmpty()) return;
 

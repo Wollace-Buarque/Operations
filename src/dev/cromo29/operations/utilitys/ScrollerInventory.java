@@ -1,9 +1,9 @@
 package dev.cromo29.operations.utilitys;
 
-import dev.cromo29.durkcore.Inventory.Inv;
-import dev.cromo29.durkcore.Util.MakeItem;
-import dev.cromo29.durkcore.Util.TXT;
-import dev.cromo29.durkcore.Util.TextAnimation;
+import dev.cromo29.durkcore.inventory.Inv;
+import dev.cromo29.durkcore.util.MakeItem;
+import dev.cromo29.durkcore.util.TXT;
+import dev.cromo29.durkcore.util.TextAnimation;
 import dev.cromo29.operations.OperationPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

@@ -1,7 +1,7 @@
 package dev.cromo29.operations.managers;
 
-import dev.cromo29.durkcore.SpecificUtils.ItemUtil;
-import dev.cromo29.durkcore.Util.TXT;
+import dev.cromo29.durkcore.specificutils.ItemUtil;
+import dev.cromo29.durkcore.util.TXT;
 import dev.cromo29.operations.api.OperationAPI;
 import dev.cromo29.operations.utilitys.ScrollerInventory;
 import dev.cromo29.operations.objects.Collector;

@@ -1,7 +1,7 @@
 package dev.cromo29.operations.events;
 
-import dev.cromo29.durkcore.Updater.event.UpdaterEvent;
-import dev.cromo29.durkcore.Util.TXT;
+import dev.cromo29.durkcore.updater.event.UpdaterEvent;
+import dev.cromo29.durkcore.util.TXT;
 import dev.cromo29.operations.api.OperationAPI;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;

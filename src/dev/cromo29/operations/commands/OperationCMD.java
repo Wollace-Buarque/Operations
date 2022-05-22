@@ -1,6 +1,6 @@
 package dev.cromo29.operations.commands;
 
-import dev.cromo29.durkcore.API.DurkCommand;
+import dev.cromo29.durkcore.api.DurkCommand;
 import dev.cromo29.operations.api.OperationAPI;
 
 import java.util.List;

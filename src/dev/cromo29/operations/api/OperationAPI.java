@@ -1,7 +1,7 @@
 package dev.cromo29.operations.api;
 
-import dev.cromo29.durkcore.Util.ConfigManager;
-import dev.cromo29.durkcore.Util.GsonManager;
+import dev.cromo29.durkcore.util.ConfigManager;
+import dev.cromo29.durkcore.util.GsonManager;
 import dev.cromo29.operations.OperationPlugin;
 import dev.cromo29.operations.managers.*;
 import dev.cromo29.operations.objects.Collector;

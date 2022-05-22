@@ -2,9 +2,9 @@ package dev.cromo29.operations.events;
 
 import dev.cromo29.chat.api.JsonTag;
 import dev.cromo29.chat.api.events.PublicMessageEvent;
-import dev.cromo29.durkcore.SpecificUtils.LocationUtil;
-import dev.cromo29.durkcore.SpecificUtils.PlayerUtil;
-import dev.cromo29.durkcore.Util.*;
+import dev.cromo29.durkcore.specificutils.LocationUtil;
+import dev.cromo29.durkcore.specificutils.PlayerUtil;
+import dev.cromo29.durkcore.util.*;
 import dev.cromo29.operations.api.OperationAPI;
 import dev.cromo29.operations.managers.CollectorManager;
 import dev.cromo29.operations.managers.OperationManager;

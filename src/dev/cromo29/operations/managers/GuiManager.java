@@ -1,13 +1,13 @@
 package dev.cromo29.operations.managers;
 
-import dev.cromo29.durkcore.Inventory.Confirmation;
-import dev.cromo29.durkcore.Inventory.Inv;
-import dev.cromo29.durkcore.SpecificUtils.ListUtil;
-import dev.cromo29.durkcore.SpecificUtils.NumberUtil;
-import dev.cromo29.durkcore.SpecificUtils.PlayerUtil;
-import dev.cromo29.durkcore.Util.MakeItem;
-import dev.cromo29.durkcore.Util.TXT;
-import dev.cromo29.durkcore.Util.VaultAPI;
+import dev.cromo29.durkcore.inventory.Confirmation;
+import dev.cromo29.durkcore.inventory.Inv;
+import dev.cromo29.durkcore.specificutils.ListUtil;
+import dev.cromo29.durkcore.specificutils.NumberUtil;
+import dev.cromo29.durkcore.specificutils.PlayerUtil;
+import dev.cromo29.durkcore.util.MakeItem;
+import dev.cromo29.durkcore.util.TXT;
+import dev.cromo29.durkcore.util.VaultAPI;
 import dev.cromo29.operations.api.OperationAPI;
 import dev.cromo29.operations.objects.Operation;
 import dev.cromo29.operations.objects.PlayerOperation;

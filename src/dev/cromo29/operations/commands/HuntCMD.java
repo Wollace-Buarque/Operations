@@ -1,7 +1,7 @@
 package dev.cromo29.operations.commands;
 
-import dev.cromo29.durkcore.API.DurkCommand;
-import dev.cromo29.durkcore.Entity.DurkPlayer;
+import dev.cromo29.durkcore.api.DurkCommand;
+import dev.cromo29.durkcore.entity.DurkPlayer;
 import dev.cromo29.operations.OperationPlugin;
 import org.bukkit.Location;
 import org.bukkit.Material;

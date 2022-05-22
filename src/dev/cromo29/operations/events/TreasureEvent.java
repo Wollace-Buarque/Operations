@@ -1,10 +1,10 @@
 package dev.cromo29.operations.events;
 
-import dev.cromo29.durkcore.SpecificUtils.NumberUtil;
-import dev.cromo29.durkcore.SpecificUtils.PlayerUtil;
-import dev.cromo29.durkcore.Util.ParticleEffect;
-import dev.cromo29.durkcore.Util.ParticleMaker;
-import dev.cromo29.durkcore.Util.TXT;
+import dev.cromo29.durkcore.specificutils.NumberUtil;
+import dev.cromo29.durkcore.specificutils.PlayerUtil;
+import dev.cromo29.durkcore.util.ParticleEffect;
+import dev.cromo29.durkcore.util.ParticleMaker;
+import dev.cromo29.durkcore.util.TXT;
 import dev.cromo29.operations.api.OperationAPI;
 import dev.cromo29.operations.OperationPlugin;
 import dev.cromo29.operations.objects.Treasure;

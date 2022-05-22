@@ -1,8 +1,8 @@
 package dev.cromo29.operations.managers;
 
-import dev.cromo29.durkcore.SpecificUtils.NumberUtil;
-import dev.cromo29.durkcore.Util.MakeItem;
-import dev.cromo29.durkcore.Util.TextAnimation;
+import dev.cromo29.durkcore.specificutils.NumberUtil;
+import dev.cromo29.durkcore.util.MakeItem;
+import dev.cromo29.durkcore.util.TextAnimation;
 import dev.cromo29.operations.OperationPlugin;
 import dev.cromo29.operations.api.OperationAPI;
 import dev.cromo29.operations.objects.Operation;

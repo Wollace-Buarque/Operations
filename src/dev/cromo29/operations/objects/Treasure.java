@@ -1,8 +1,8 @@
 package dev.cromo29.operations.objects;
 
-import dev.cromo29.durkcore.SpecificUtils.NumberUtil;
-import dev.cromo29.durkcore.Util.MakeItem;
-import dev.cromo29.durkcore.Util.TXT;
+import dev.cromo29.durkcore.specificutils.NumberUtil;
+import dev.cromo29.durkcore.util.MakeItem;
+import dev.cromo29.durkcore.util.TXT;
 import dev.cromo29.operations.OperationPlugin;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
